@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  database:
+    image: mysql
+    env_file:
+      - .env
+    ports:
+      - 3306:3306
+    networks:
+      - symfony
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./:/var/www/
+    networks:
+      - symfony
+    depends_on:
+      - database
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    volumes:
+      - ./:/var/www/
+    ports:
+      - 8080:8080
+    networks:
+      - symfony
+
+networks:
+  symfony:
